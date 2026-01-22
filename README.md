@@ -234,14 +234,4 @@ GitHub Actions workflow automatically:
 4. Run tests and linting
 5. Submit a pull request
 
-## 📄 License
 
-ISC
-
-## 📞 Support
-
-For questions or issues, please open a GitHub issue.
-
----
-
-**Built with ❤️ using Playwright and TypeScript**
