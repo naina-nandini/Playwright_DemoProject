@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright TypeScript Framework - Complete Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #10b981;
+            --dark-bg: #1e293b;
+            --light-bg: #f8fafc;
+            --text-dark: #0f172a;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --code-bg: #f1f5f9;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 20px;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInDown 1s ease;
+        }
+
+        header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        nav {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 2.5em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary-color);
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: var(--secondary-color);
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.8em;
+            margin: 30px 0 15px;
+        }
+
+        h4 {
+            color: var(--text-dark);
+            font-size: 1.3em;
+            margin: 20px 0 10px;
+        }
+
+        .card {
+            background: var(--light-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .card.success {
+            border-left-color: var(--success);
+        }
+
+        .card.warning {
+            border-left-color: var(--warning);
+        }
+
+        .card.error {
+            border-left-color: var(--error);
+        }
+
+        code {
+            background: var(--code-bg);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+
+        pre {
+            background: var(--dark-bg);
+            color: #e2e8f0;
+            padding: 25px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .feature-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .feature-box h4 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .feature-box p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tr:hover {
+            background: var(--light-bg);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .badge.primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .badge.success {
+            background: var(--success);
+            color: white;
+        }
+
+        .badge.warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid var(--warning);
+        }
+
+        .diagram {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .flow-item {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .arrow {
+            display: inline-block;
+            font-size: 2em;
+            color: var(--primary-color);
+            margin: 0 10px;
+        }
+
+        footer {
+            background: var(--dark-bg);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            border-radius: 20px;
+            margin-top: 50px;
+        }
+
+        .interview-tip {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .interview-tip h4 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+        }
+
+        .toc {
+            background: var(--light-bg);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .toc h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .toc ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .toc li {
+            padding: 8px 0;
+        }
+
+        .toc a {
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .toc a:hover {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎭 Playwright TypeScript Framework</h1>
+            <p>Production-Ready Test Automation Framework with Design Patterns</p>
+            <p style="margin-top: 15px; font-size: 1em;">
+                <span class="badge success">TypeScript</span>
+                <span class="badge primary">Playwright</span>
+                <span class="badge warning">Design Patterns</span>
+            </p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#design-patterns">Design Patterns</a></li>
+                <li><a href="#components">Components</a></li>
+                <li><a href="#usage">Usage</a></li>
+                <li><a href="#best-practices">Best Practices</a></li>
+                <li><a href="#interview">Interview Guide</a></li>
+            </ul>
+        </nav>
+
+        <div class="content">
+            <!-- OVERVIEW SECTION -->
+            <section id="overview">
+                <h2>📋 Framework Overview</h2>
+                
+                <p style="font-size: 1.2em; margin-bottom: 25px;">
+                    This is a <strong>production-ready Playwright automation framework</strong> built with TypeScript, 
+                    implementing industry-standard design patterns and best practices for scalable, maintainable test automation.
+                </p>
+
+                <div class="grid">
+                    <div class="feature-box">
+                        <h4>🎯 Page Object Model</h4>
+                        <p>Clean separation of test logic and page interactions for maximum maintainability</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>🔧 Design Patterns</h4>
+                        <p>Singleton, Factory, Fluent Interface, Template Method, and Component patterns</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>🌐 Multi-Browser</h4>
+                        <p>Chromium, Firefox, and WebKit support with parallel execution</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>🔌 API Testing</h4>
+                        <p>Integrated API testing capabilities with request/response validation</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>📸 Visual Testing</h4>
+                        <p>Screenshot comparison and visual regression detection</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>📊 Rich Reporting</h4>
+                        <p>HTML, JSON, JUnit, and Allure reports with detailed insights</p>
+                    </div>
+                </div>
+
+                <div class="card success">
+                    <h4>✅ Key Benefits</h4>
+                    <ul>
+                        <li><strong>Scalable:</strong> Easily add new tests and page objects</li>
+                        <li><strong>Maintainable:</strong> Changes in one place reflect everywhere</li>
+                        <li><strong>Reusable:</strong> Common utilities and base classes</li>
+                        <li><strong>Type-Safe:</strong> TypeScript ensures code quality</li>
+                        <li><strong>CI/CD Ready:</strong> GitHub Actions integration included</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- ARCHITECTURE SECTION -->
+            <section id="architecture">
+                <h2>🏗️ Framework Architecture</h2>
+
+                <h3>Project Structure</h3>
+                <pre><code>playwright-framework/
+├── src/
+│   ├── core/               # Core framework components
+│   │   ├── BasePage.ts     # Base page class (Template Method)
+│   │   ├── BrowserManager.ts  # Browser management (Singleton)
+│   │   └── TestDataFactory.ts # Test data generation (Factory)
+│   ├── pages/              # Page Objects (POM)
+│   │   ├── LoginPage.ts
+│   │   ├── DashboardPage.ts
+│   │   └── components/     # Reusable components
+│   │       └── Header.ts
+│   └── utils/              # Utility classes
+│       ├── Logger.ts       # Winston logger
+│       ├── ConfigReader.ts # Configuration management
+│       ├── ApiHelper.ts    # API testing utilities
+│       └── ScreenshotHelper.ts
+├── tests/
+│   ├── ui/                 # UI tests
+│   ├── api/                # API tests
+│   ├── visual/             # Visual regression tests
+│   └── fixtures/           # Custom Playwright fixtures
+├── testdata/               # Test data files
+├── config/                 # Environment configurations
+├── .github/workflows/      # CI/CD pipelines
+└── playwright.config.ts    # Playwright configuration</code></pre>
+
+                <h3>Architecture Diagram</h3>
+                <div class="diagram">
+                    <div class="flow-item">Tests</div>
+                    <span class="arrow">→</span>
+                    <div class="flow-item">Page Objects</div>
+                    <span class="arrow">→</span>
+                    <div class="flow-item">BasePage</div>
+                    <span class="arrow">→</span>
+                    <div class="flow-item">Playwright API</div>
+                </div>
+
+                <div class="card">
+                    <h4>Layered Architecture</h4>
+                    <table>
+                        <tr>
+                            <th>Layer</th>
+                            <th>Responsibility</th>
+                            <th>Examples</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Test Layer</strong></td>
+                            <td>Test scenarios and assertions</td>
+                            <td>login.spec.ts, users.spec.ts</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Page Object Layer</strong></td>
+                            <td>Page interactions and elements</td>
+                            <td>LoginPage, DashboardPage</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Core Layer</strong></td>
+                            <td>Reusable base classes</td>
+                            <td>BasePage, BrowserManager</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Utility Layer</strong></td>
+                            <td>Helper functions and utilities</td>
+                            <td>Logger, ApiHelper, ConfigReader</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- DESIGN PATTERNS SECTION -->
+            <section id="design-patterns">
+                <h2>🎨 Design Patterns Implemented</h2>
+
+                <div class="card">
+                    <h3>1. Page Object Model (POM)</h3>
+                    <p><strong>Purpose:</strong> Encapsulate page elements and actions in dedicated classes</p>
+                    <p><strong>Benefits:</strong> Reduces code duplication, improves maintainability, separates test logic from page details</p>
+                    
+                    <h4>Example:</h4>
+                    <pre><code>export class LoginPage extends BasePage {
+  private readonly emailInput: Locator;
+  private readonly passwordInput: Locator;
+  private readonly loginButton: Locator;
+
+  async login(email: string, password: string): Promise&lt;void&gt; {
+    await this.fill(this.emailInput, email);
+    await this.fill(this.passwordInput, password);
+    await this.click(this.loginButton);
+  }
+}</code></pre>
+                </div>
+
+                <div class="card success">
+                    <h3>2. Singleton Pattern</h3>
+                    <p><strong>Purpose:</strong> Ensure only one instance of a class exists</p>
+                    <p><strong>Used In:</strong> BrowserManager, Logger, ConfigReader, TestDataFactory</p>
+                    
+                    <h4>Example:</h4>
+                    <pre><code>export class BrowserManager {
+  private static instance: BrowserManager;
+  
+  private constructor() {}
+  
+  public static getInstance(): BrowserManager {
+    if (!BrowserManager.instance) {
+      BrowserManager.instance = new BrowserManager();
+    }
+    return BrowserManager.instance;
+  }
+}</code></pre>
+
+                    <div class="interview-tip">
+                        <h4>💡 Interview Tip</h4>
+                        <p><strong>Q: Why use Singleton for BrowserManager?</strong></p>
+                        <p><strong>A:</strong> To ensure we have only one browser instance throughout test execution, 
+                        preventing resource wastage and ensuring consistent browser state. This also provides a 
+                        centralized point for browser configuration and management.</p>
+                    </div>
+                </div>
+
+                <div class="card warning">
+                    <h3>3. Factory Pattern</h3>
+                    <p><strong>Purpose:</strong> Create objects without specifying exact class</p>
+                    <p><strong>Used In:</strong> TestDataFactory for generating test data</p>
+                    
+                    <h4>Example:</h4>
+                    <pre><code>export class TestDataFactory {
+  createUser(overrides?: Partial&lt;UserData&gt;): UserData {
+    return {
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      email: faker.internet.email(),
+      password: this.generateSecurePassword(),
+      ...overrides
+    };
+  }
+}
+
+// Usage
+const user = testDataFactory.createUser({ email: 'custom@example.com' });</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>4. Fluent Interface Pattern</h3>
+                    <p><strong>Purpose:</strong> Enable method chaining for readable code</p>
+                    <p><strong>Benefits:</strong> Improves code readability, creates DSL-like syntax</p>
+                    
+                    <h4>Example:</h4>
+                    <pre><code>// Methods return 'this' for chaining
+async enterEmail(email: string): Promise&lt;LoginPage&gt; {
+  await this.fill(this.emailInput, email);
+  return this;
+}
+
+// Usage
+await loginPage
+  .goto()
+  .then(lp => lp.enterEmail('test@example.com'))
+  .then(lp => lp.enterPassword('password123'));</code></pre>
+                </div>
+
+                <div class="card success">
+                    <h3>5. Template Method Pattern</h3>
+                    <p><strong>Purpose:</strong> Define skeleton of algorithm in base class</p>
+                    <p><strong>Used In:</strong> BasePage provides template methods for all page objects</p>
+                    
+                    <h4>Example:</h4>
+                    <pre><code>export abstract class BasePage {
+  // Template methods available to all page objects
+  async click(locator: Locator): Promise&lt;void&gt; {
+    await this.waitForElement(locator);
+    await locator.click();
+  }
+  
+  async fill(locator: Locator, text: string): Promise&lt;void&gt; {
+    await this.waitForElement(locator);
+    await locator.fill(text);
+  }
+}</code></pre>
+                </div>
+
+                <div class="card warning">
+                    <h3>6. Component Pattern</h3>
+                    <p><strong>Purpose:</strong> Create reusable UI components</p>
+                    <p><strong>Benefits:</strong> Composition over inheritance, reusability</p>
+                    
+                    <h4>Example:</h4>
+                    <pre><code>export class Header {
+  async search(query: string): Promise&lt;void&gt; {
+    await this.searchBox.fill(query);
+    await this.page.keyboard.press('Enter');
+  }
+}
+
+// Compose into page objects
+export class DashboardPage extends BasePage {
+  public readonly header: Header;
+  
+  constructor(page: Page) {
+    super(page);
+    this.header = new Header(page);
+  }
+}</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>7. Fixture Pattern</h3>
+                    <p><strong>Purpose:</strong> Setup and teardown automation</p>
+                    <p><strong>Benefits:</strong> Reduces boilerplate, ensures consistent test setup</p>
+                    
+                    <h4>Example:</h4>
+                    <pre><code>export const test = base.extend&lt;CustomFixtures&gt;({
+  loginPage: async ({ page }, use) => {
+    const loginPage = new LoginPage(page);
+    await use(loginPage);
+  },
+  
+  authenticatedPage: async ({ page }, use) => {
+    // Auto-login before test
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login('user@example.com', 'password');
+    await use(page);
+  }
+});</code></pre>
+                </div>
+
+                <div class="highlight">
+                    <h4>🎯 Design Pattern Summary</h4>
+                    <p>This framework combines <strong>7 design patterns</strong> to create a robust, scalable, and maintainable 
+                    test automation solution. Each pattern serves a specific purpose and together they provide a 
+                    professional-grade framework architecture.</p>
+                </div>
+            </section>
+
+            <!-- COMPONENTS SECTION -->
+            <section id="components">
+                <h2>🔧 Framework Components</h2>
+
+                <h3>Core Components</h3>
+
+                <div class="card">
+                    <h4>BasePage.ts</h4>
+                    <p><strong>Purpose:</strong> Abstract base class providing common page interactions</p>
+                    <p><strong>Key Methods:</strong></p>
+                    <ul>
+                        <li><code>click(locator)</code> - Click with built-in wait</li>
+                        <li><code>fill(locator, text)</code> - Fill input field</li>
+                        <li><code>waitForElement(locator)</code> - Smart wait for element</li>
+                        <li><code>getText(locator)</code> - Get element text</li>
+                        <li><code>isVisible(locator)</code> - Check visibility</li>
+                        <li><code>takeScreenshot(name)</code> - Capture screenshot</li>
+                    </ul>
+                </div>
+
+                <div class="card success">
+                    <h4>BrowserManager.ts</h4>
+                    <p><strong>Purpose:</strong> Singleton for browser instance management</p>
+                    <p><strong>Features:</strong></p>
+                    <ul>
+                        <li>Single browser instance across tests</li>
+                        <li>Multiple browser context support</li>
+                        <li>Cookie and storage state management</li>
+                        <li>Tracing and video recording</li>
+                    </ul>
+                </div>
+
+                <div class="card warning">
+                    <h4>TestDataFactory.ts</h4>
+                    <p><strong>Purpose:</strong> Generate realistic test data using Faker.js</p>
+                    <p><strong>Data Types:</strong></p>
+                    <ul>
+                        <li><code>createUser()</code> - User data with email, password, etc.</li>
+                        <li><code>createAddress()</code> - Address information</li>
+                        <li><code>createCreditCard()</code> - Payment card data</li>
+                        <li><code>createProduct()</code> - Product information</li>
+                        <li><code>createCompany()</code> - Company details</li>
+                    </ul>
+                </div>
+
+                <h3>Utility Components</h3>
+
+                <div class="grid">
+                    <div class="card">
+                        <h4>Logger.ts</h4>
+                        <p>Winston-based logging with multiple levels (info, error, warn, debug)</p>
+                    </div>
+                    <div class="card">
+                        <h4>ConfigReader.ts</h4>
+                        <p>Environment configuration management with type-safe access</p>
+                    </div>
+                    <div class="card">
+                        <h4>ApiHelper.ts</h4>
+                        <p>API testing utilities for REST operations (GET, POST, PUT, DELETE)</p>
+                    </div>
+                    <div class="card">
+                        <h4>ScreenshotHelper.ts</h4>
+                        <p>Screenshot capture and comparison for visual testing</p>
+                    </div>
+                </div>
+
+                <h3>Page Objects</h3>
+
+                <table>
+                    <tr>
+                        <th>Page Object</th>
+                        <th>Purpose</th>
+                        <th>Key Features</th>
+                    </tr>
+                    <tr>
+                        <td><strong>LoginPage</strong></td>
+                        <td>Login page interactions</td>
+                        <td>Fluent interface, error handling, remember me</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DashboardPage</strong></td>
+                        <td>Dashboard operations</td>
+                        <td>Component composition, stats cards, notifications</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Header (Component)</strong></td>
+                        <td>Reusable header</td>
+                        <td>Search, navigation, user menu</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- USAGE SECTION -->
+            <section id="usage">
+                <h2>🚀 Usage Guide</h2>
+
+                <h3>Installation</h3>
+                <pre><code># Install dependencies
+npm install
+
+# Install Playwright browsers
+npm run install:browsers
+
+# Set up environment
+copy .env.example .env</code></pre>
+
+                <h3>Running Tests</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>All Tests</h4>
+                        <pre><code>npm test</code></pre>
+                    </div>
+                    <div class="card">
+                        <h4>UI Tests Only</h4>
+                        <pre><code>npm run test:ui</code></pre>
+                    </div>
+                    <div class="card">
+                        <h4>API Tests Only</h4>
+                        <pre><code>npm run test:api</code></pre>
+                    </div>
+                    <div class="card">
+                        <h4>Visual Tests</h4>
+                        <pre><code>npm run test:visual</code></pre>
+                    </div>
+                    <div class="card">
+                        <h4>Specific Browser</h4>
+                        <pre><code>npm run test:chrome</code></pre>
+                    </div>
+                    <div class="card">
+                        <h4>Debug Mode</h4>
+                        <pre><code>npm run test:debug</code></pre>
+                    </div>
+                </div>
+
+                <h3>Writing Tests</h3>
+
+                <h4>UI Test Example</h4>
+                <pre><code>import { test, expect } from '../fixtures/testFixtures';
+import { testDataFactory } from '@core/TestDataFactory';
+
+test('should login successfully', async ({ loginPage, page }) => {
+  // Arrange
+  const user = testDataFactory.createUser({
+    email: 'demo@example.com',
+    password: 'Demo@123'
+  });
+
+  // Act
+  await loginPage.goto();
+  await loginPage.login(user.email, user.password);
+
+  // Assert
+  await expect(page).toHaveURL(/dashboard/);
+});</code></pre>
+
+                <h4>API Test Example</h4>
+                <pre><code>import { ApiHelper } from '@utils/ApiHelper';
+
+test('should create user via API', async () => {
+  // Arrange
+  const api = new ApiHelper('https://api.example.com');
+  const newUser = testDataFactory.createUser();
+
+  // Act
+  const response = await api.post('/users', newUser);
+
+  // Assert
+  await api.verifyStatus(response, 201);
+  const createdUser = await api.getResponseJson(response);
+  expect(createdUser.email).toBe(newUser.email);
+});</code></pre>
+
+                <h3>Viewing Reports</h3>
+                <pre><code># HTML Report
+npm run report
+
+# Allure Report
+npm run report:allure</code></pre>
+            </section>
+
+            <!-- BEST PRACTICES SECTION -->
+            <section id="best-practices">
+                <h2>✨ Best Practices</h2>
+
+                <div class="card success">
+                    <h4>1. Use Page Objects</h4>
+                    <p>Always encapsulate page interactions in page objects. Never interact with elements directly in tests.</p>
+                    <pre><code>// ❌ Bad
+await page.locator('#email').fill('test@example.com');
+
+// ✅ Good
+await loginPage.enterEmail('test@example.com');</code></pre>
+                </div>
+
+                <div class="card success">
+                    <h4>2. Avoid Hard Waits</h4>
+                    <p>Use smart waits from BasePage instead of arbitrary timeouts.</p>
+                    <pre><code>// ❌ Bad
+await page.waitForTimeout(5000);
+
+// ✅ Good
+await this.waitForElement(locator);</code></pre>
+                </div>
+
+                <div class="card success">
+                    <h4>3. Use Test Data Factory</h4>
+                    <p>Generate realistic test data instead of hardcoding values.</p>
+                    <pre><code>// ❌ Bad
+const email = 'test123@example.com';
+
+// ✅ Good
+const user = testDataFactory.createUser();</code></pre>
+                </div>
+
+                <div class="card success">
+                    <h4>4. Leverage Fixtures</h4>
+                    <p>Use custom fixtures for common setup/teardown operations.</p>
+                    <pre><code>// ✅ Good - Auto-authenticated
+test('should access dashboard', async ({ authenticatedPage }) => {
+  // Already logged in!
+  await authenticatedPage.goto('/dashboard');
+});</code></pre>
+                </div>
+
+                <div class="card success">
+                    <h4>5. Keep Tests Independent</h4>
+                    <p>Each test should run standalone without depending on others.</p>
+                </div>
+
+                <div class="card success">
+                    <h4>6. Use Descriptive Names</h4>
+                    <p>Test and method names should clearly describe what they do.</p>
+                    <pre><code>// ❌ Bad
+test('test1', async () => { ... });
+
+// ✅ Good
+test('should display error message for invalid credentials', async () => { ... });</code></pre>
+                </div>
+
+                <div class="card success">
+                    <h4>7. Log Important Actions</h4>
+                    <p>Use Logger for debugging and tracking test execution.</p>
+                    <pre><code>logger.info('Starting login test');
+logger.error('Login failed', { error: errorMessage });</code></pre>
+                </div>
+
+                <div class="card success">
+                    <h4>8. Handle Errors Gracefully</h4>
+                    <p>Capture screenshots on failure for debugging.</p>
+                    <pre><code>try {
+  await loginPage.login(email, password);
+} catch (error) {
+  await loginPage.takeScreenshot('login-failure');
+  throw error;
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- INTERVIEW GUIDE SECTION -->
+            <section id="interview">
+                <h2>🎤 Interview Preparation Guide</h2>
+
+                <div class="interview-tip">
+                    <h4>Framework Overview Questions</h4>
+                    <p><strong>Q: Can you explain your framework architecture?</strong></p>
+                    <p><strong>A:</strong> "I've built a layered Playwright TypeScript framework with 4 main layers: 
+                    Test Layer (test scenarios), Page Object Layer (page interactions), Core Layer (base classes), 
+                    and Utility Layer (helpers). This separation ensures maintainability and scalability."</p>
+                </div>
+
+                <div class="interview-tip">
+                    <h4>Design Pattern Questions</h4>
+                    <p><strong>Q: What design patterns did you implement?</strong></p>
+                    <p><strong>A:</strong> "I implemented 7 design patterns:</p>
+                    <ul>
+                        <li><strong>Page Object Model</strong> - For clean test structure</li>
+                        <li><strong>Singleton</strong> - For BrowserManager and utilities</li>
+                        <li><strong>Factory</strong> - For test data generation</li>
+                        <li><strong>Fluent Interface</strong> - For readable method chaining</li>
+                        <li><strong>Template Method</strong> - In BasePage for common operations</li>
+                        <li><strong>Component</strong> - For reusable UI components</li>
+                        <li><strong>Fixture</strong> - For setup/teardown automation</li>
+                    </ul>
+                    <p>Each pattern solves a specific problem and together they create a robust framework."</p>
+                </div>
+
+                <div class="interview-tip">
+                    <h4>Technical Questions</h4>
+                    <p><strong>Q: How do you handle waits in your framework?</strong></p>
+                    <p><strong>A:</strong> "I use smart waits in the BasePage class. Every interaction method 
+                    (click, fill, etc.) has built-in <code>waitForElement()</code> that waits for visibility. 
+                    This eliminates flaky tests from timing issues and avoids hard waits."</p>
+                </div>
+
+                <div class="interview-tip">
+                    <h4>Test Data Questions</h4>
+                    <p><strong>Q: How do you manage test data?</strong></p>
+                    <p><strong>A:</strong> "I use the Factory pattern with Faker.js in TestDataFactory. 
+                    It generates realistic data on-demand with methods like <code>createUser()</code>, 
+                    <code>createAddress()</code>, etc. This ensures unique data for each test run and 
+                    supports data-driven testing."</p>
+                </div>
+
+                <div class="interview-tip">
+                    <h4>Reporting Questions</h4>
+                    <p><strong>Q: What reporting mechanisms do you have?</strong></p>
+                    <p><strong>A:</strong> "The framework supports multiple reporters: HTML (built-in Playwright), 
+                    JSON (for parsing), JUnit (for CI/CD integration), and Allure (for detailed reports with 
+                    screenshots and videos). All configured in playwright.config.ts."</p>
+                </div>
+
+                <div class="interview-tip">
+                    <h4>CI/CD Questions</h4>
+                    <p><strong>Q: How is your framework integrated with CI/CD?</strong></p>
+                    <p><strong>A:</strong> "I've set up GitHub Actions workflow that runs tests on push/PR, 
+                    executes across multiple browsers in parallel, uploads test artifacts and reports, 
+                    and has scheduled daily runs. The framework is also Dockerized for consistent execution."</p>
+                </div>
+
+                <div class="interview-tip">
+                    <h4>Scalability Questions</h4>
+                    <p><strong>Q: How does your framework scale?</strong></p>
+                    <p><strong>A:</strong> "The framework scales through:</p>
+                    <ul>
+                        <li>Parallel execution (configured workers)</li>
+                        <li>Modular page objects (easy to add new pages)</li>
+                        <li>Reusable components (composition pattern)</li>
+                        <li>Environment-based configuration (dev, qa, prod)</li>
+                        <li>Path aliases in TypeScript (clean imports)</li>
+                    </ul>
+                    <p>Adding new tests or pages follows the same pattern, ensuring consistency."</p>
+                </div>
+
+                <div class="card warning">
+                    <h4>🎯 Key Talking Points</h4>
+                    <ol>
+                        <li><strong>TypeScript Benefits:</strong> Type safety, IntelliSense, better refactoring</li>
+                        <li><strong>POM Advantages:</strong> Maintainability, reusability, separation of concerns</li>
+                        <li><strong>Design Patterns:</strong> Professional approach, industry standards</li>
+                        <li><strong>Multi-layer Testing:</strong> UI, API, and Visual testing in one framework</li>
+                        <li><strong>CI/CD Integration:</strong> Automated testing pipeline</li>
+                        <li><strong>Reporting:</strong> Multiple report formats for different stakeholders</li>
+                        <li><strong>Best Practices:</strong> Smart waits, fixtures, logging, error handling</li>
+                    </ol>
+                </div>
+
+                <div class="highlight">
+                    <h4>💼 Interview Success Tips</h4>
+                    <ul>
+                        <li>Always explain <strong>WHY</strong> you chose a particular pattern or approach</li>
+                        <li>Give <strong>real examples</strong> from the framework code</li>
+                        <li>Discuss <strong>trade-offs</strong> and alternative approaches</li>
+                        <li>Show understanding of <strong>scalability and maintainability</strong></li>
+                        <li>Mention <strong>industry best practices</strong> you followed</li>
+                        <li>Be ready to <strong>demo the framework</strong> live</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- QUICK REFERENCE -->
+            <section id="quick-reference">
+                <h2>📚 Quick Reference</h2>
+
+                <h3>Common Commands</h3>
+                <table>
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td><code>npm test</code></td>
+                        <td>Run all tests</td>
+                    </tr>
+                    <tr>
+                        <td><code>npm run test:ui</code></td>
+                        <td>Run UI tests only</td>
+                    </tr>
+                    <tr>
+                        <td><code>npm run test:api</code></td>
+                        <td>Run API tests only</td>
+                    </tr>
+                    <tr>
+                        <td><code>npm run test:debug</code></td>
+                        <td>Debug tests with Playwright Inspector</td>
+                    </tr>
+                    <tr>
+                        <td><code>npm run report</code></td>
+                        <td>View HTML report</td>
+                    </tr>
+                    <tr>
+                        <td><code>npm run lint</code></td>
+                        <td>Run ESLint</td>
+                    </tr>
+                    <tr>
+                        <td><code>npm run format</code></td>
+                        <td>Format code with Prettier</td>
+                    </tr>
+                </table>
+
+                <h3>Environment Variables</h3>
+                <table>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Purpose</th>
+                    </tr>
+                    <tr>
+                        <td><code>BASE_URL</code></td>
+                        <td>Application base URL</td>
+                    </tr>
+                    <tr>
+                        <td><code>API_BASE_URL</code></td>
+                        <td>API endpoint base URL</td>
+                    </tr>
+                    <tr>
+                        <td><code>TEST_USER_EMAIL</code></td>
+                        <td>Test user credentials</td>
+                    </tr>
+                    <tr>
+                        <td><code>HEADLESS</code></td>
+                        <td>Run in headless mode (true/false)</td>
+                    </tr>
+                    <tr>
+                        <td><code>LOG_LEVEL</code></td>
+                        <td>Logging level (info, debug, error)</td>
+                    </tr>
+                </table>
+            </section>
+        </div>
+
+        <footer>
+            <h3>🎭 Playwright TypeScript Framework</h3>
+            <p style="margin-top: 15px;">Built with industry-standard design patterns and best practices</p>
+            <p style="margin-top: 10px; opacity: 0.8;">Perfect for interview preparation and production use</p>
+            <p style="margin-top: 20px;">
+                <span class="badge success">TypeScript</span>
+                <span class="badge primary">Playwright</span>
+                <span class="badge warning">7 Design Patterns</span>
+                <span class="badge success">CI/CD Ready</span>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

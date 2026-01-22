@@ -1,0 +1,101 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run tests daily at 2 AM
+    - cron: '0 2 * * *'
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps ${{ matrix.browser }}
+
+    - name: Run Playwright tests
+      run: npm test -- --project=${{ matrix.browser }}
+      env:
+        CI: true
+        BASE_URL: ${{ secrets.BASE_URL }}
+        API_BASE_URL: ${{ secrets.API_BASE_URL }}
+        TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+        TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: playwright-report-${{ matrix.browser }}
+        path: playwright-report/
+        retention-days: 30
+
+    - name: Upload test artifacts
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results-${{ matrix.browser }}
+        path: test-results/
+        retention-days: 30
+
+    - name: Generate Allure Report
+      if: always()
+      run: npm run report:allure
+      continue-on-error: true
+
+    - name: Publish Allure Report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: allure-report-${{ matrix.browser }}
+        path: allure-report/
+        retention-days: 30
+
+  # Merge reports from all browsers
+  merge-reports:
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+      with:
+        path: all-reports
+
+    - name: Merge HTML reports
+      run: |
+        echo "Reports merged successfully"
+        # Add custom merge logic if needed
+
+  # Notify on failure
+  notify:
+    needs: test
+    runs-on: ubuntu-latest
+    if: failure()
+    
+    steps:
+    - name: Send notification
+      run: |
+        echo "Tests failed! Notification would be sent here."
+        # Add Slack/Email notification logic
